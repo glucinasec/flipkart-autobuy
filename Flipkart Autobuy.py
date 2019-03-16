@@ -5,14 +5,13 @@ from selenium.webdriver.support import expected_conditions as EC
 import time
 
 print('Flipkart URL:')
-#url = input()
-url = "https://www.flipkart.com/crazyink-sqcricketer-key-chain/p/itmf4huyhtfzkpun?pid=KECF4HQVQS8ZH4D4&lid=LSTKECF4HQVQS8ZH4D4PD6NIO&marketplace=FLIPKART&srno=b_1_3&otracker=hp_omu_Deals%20of%20the%20Day_1_Starting%20%40%20%E2%82%B966_CFFNJG01YDH2_0&fm=organic&iid=d6521f47-d5a7-46c5-a7ce-68a222a98afc.KECF4HQVQS8ZH4D4.SEARCH"
+url = input()
+#url = "https://www.flipkart.com/crazyink-sqcricketer-key-chain/p/itmf4huyhtfzkpun?pid=KECF4HQVQS8ZH4D4&lid=LSTKECF4HQVQS8ZH4D4PD6NIO&marketplace=FLIPKART&srno=b_1_3&otracker=hp_omu_Deals%20of%20the%20Day_1_Starting%20%40%20%E2%82%B966_CFFNJG01YDH2_0&fm=organic&iid=d6521f47-d5a7-46c5-a7ce-68a222a98afc.KECF4HQVQS8ZH4D4.SEARCH"
 
-email_inp = "jshreyan@gmail.com"
-pass_inp = "Mast3rm1nd!"
-cvv_inp  = "965"
+email_inp = "abc@gmail.com"
+pass_inp = "xyz"
+cvv_inp  = "123"
 
-#addr_input  = "CNTCT8BD6AB98EAD54169B97B4AF49"
 addr_input  = "CNTCT1EA51B7A7EFC475992EE32A22"
 pay_opt_input = "CRD170926122609387B1E5519C47D302"
 
@@ -248,9 +247,11 @@ def try_payment_page():
     payment_continue()
     #otp_submit()
 
-try_till_otp()
-#try_payment_page()
-#try_buy_page()
+if __name__ == "__main__":
+    try_all()
+    try_till_otp()
+    #try_payment_page()
+    #try_buy_page()
 
 
 
