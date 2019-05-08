@@ -3,30 +3,54 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
+from configparser import ConfigParser
 
-print('Flipkart URL:')
-url = input()
-#url = "https://www.flipkart.com/crazyink-sqcricketer-key-chain/p/itmf4huyhtfzkpun?pid=KECF4HQVQS8ZH4D4&lid=LSTKECF4HQVQS8ZH4D4PD6NIO&marketplace=FLIPKART&srno=b_1_3&otracker=hp_omu_Deals%20of%20the%20Day_1_Starting%20%40%20%E2%82%B966_CFFNJG01YDH2_0&fm=organic&iid=d6521f47-d5a7-46c5-a7ce-68a222a98afc.KECF4HQVQS8ZH4D4.SEARCH"
+print('Paste Flipkart URL:')
 
-email_inp = "abc@gmail.com"
-pass_inp = "xyz"
-cvv_inp  = "123"
+CONFIG = ConfigParser()
+CONFIG.read('config.ini')
 
-addr_input  = "CNTCT1EA51B7A7EFC475992EE32A22"
-pay_opt_input = "CRD170926122609387B1E5519C47D302"
+driver_path = CONFIG.get('MAIN', 'DRIVER_LOCATION') #"C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe"
+email_inp = CONFIG.get('CREDENTIALS', 'USERNAME')
+pass_inp = CONFIG.get('CREDENTIALS', 'PASSWORD')
+cvv_inp = CONFIG.get('ORDER', 'CVV') 
+addr_input = CONFIG.get('ORDER', 'ADDRESS') #CNTCT1EA51B7A7EFC475992EE32A22
+pay_opt_input = CONFIG.get('ORDER', 'PAYMENT') #CRD170926122609387B1E5519C47D302
 
-print(url)
+bankname_input = CONFIG.get('EMIOPTIONS', 'BANK')
+tenure_input = CONFIG.get('EMIOPTIONS', 'TENURE')
 
-driver = webdriver.Chrome("C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe")
+#url = input()
+#url = "https://www.flipkart.com/redmi-note-7-ruby-red-64-gb/p/itmfdzvfanddhqc7?pid=MOBFDXZ39VMKXZAA&lid=LSTMOBFDXZ39VMKXZAAAJKJYR&marketplace=FLIPKART&fm=personalisedRecommendation%2Fp2p-same&iid=R%3As%3Bp%3AMOBFDXZ376XRTZXH%3Bpt%3Ahp%3Buid%3Ae1401e5b-fa4c-90c6-31a2-de174d36e55e%3B.MOBFDXZ39VMKXZAA.LSTMOBFDXZ39VMKXZAAAJKJYR&ppt=HomePage&ppn=Home&ssid=9hhfdo0q4w0000001557248900979&otracker=hp_reco_Suggested%2Bfor%2BYou_1_10.productCard.PMU_V2_Redmi%2BNote%2B7%2B%2528Ruby%2BRed%252C%2B64%2BGB%2529_MOBFDXZ39VMKXZAA.LSTMOBFDXZ39VMKXZAAAJKJYR_personalisedRecommendation%2Fp2p-same_0&cid=MOBFDXZ39VMKXZAA.LSTMOBFDXZ39VMKXZAAAJKJYR"
+url="https://www.flipkart.com/redmi-note-7-pro-neptune-blue-64-gb/p/itmfegkx8nbcze6t?pid=MOBFDXZ376XRTZXH&lid=LSTMOBFDXZ376XRTZXHWRK63O&marketplace=FLIPKART&sattr[]=color&sattr[]=storage&sattr[]=ram&st=color&otracker=search"
+
+#print(url)
+print('\nLogging in with username:',email_inp)
+if pay_opt_input == 'EMI_OPTIONS':
+    print('\nEMI Option Selected. \nBANK:',bankname_input,'\nTENURE:',tenure_input,'\n')
+elif pay_opt_input == 'PHONEPE':
+    print('\nPayment with Phonepay\n')
+elif pay_opt_input == 'NET_OPTIONS':
+    print('\nNet Banking Payment Selected\n')
+elif pay_opt_input == 'COD':
+    print('\nCash On Delivery Selected\n')
+else:
+    print('\nFull Payment Selected\n')
+    
+#input('Confirm Payment Details & Press Enter to proceed.')
+
+driver = webdriver.Chrome(driver_path)
 driver.maximize_window()
 driver.get(url)
+
+input('\nConfirm Payment Details above, Product Details on Browser & Press Enter to proceed.')
 
 def login():
     try:
         print("Logging In..")
         try:
             login = WebDriverWait(driver, 20).until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, "._1jJkOg"))
+                EC.element_to_be_clickable((By.CSS_SELECTOR, "._34niwY"))
             )
             print('Login Button Clickable')
         except:
@@ -40,26 +64,52 @@ def login():
         
 def login_submit():
     try:
-        email = driver.find_element_by_css_selector(".Km0IJL ._2zrpKA")
-        passd = driver.find_element_by_css_selector(".Km0IJL ._3v41xv")
-        email.clear()
-        passd.clear()
-        email.send_keys(email_inp)
-        passd.send_keys(pass_inp)
-        try:
+        if 'Enter Password' in driver.page_source:
+            print('Trying Usual method of Login.')
+            email = driver.find_element_by_css_selector(".Km0IJL ._2zrpKA")
+            passd = driver.find_element_by_css_selector(".Km0IJL ._3v41xv")
+            email.clear()
+            passd.clear()
+            email.send_keys(email_inp)
+            passd.send_keys(pass_inp)
+            try:
+                form = WebDriverWait(driver, 20).until(
+                    EC.element_to_be_clickable((By.CSS_SELECTOR, ".Km0IJL ._7UHT_c"))
+                )
+                print('Submit Button Clickable')
+            except:
+                print('Submit Button Not Clickable')
+            form.click()     
+        else:
+            print('Trying Alternate method of Login.')
+            email = driver.find_element_by_css_selector("._2zrpKA")
+            email.clear()
+            email.send_keys(email_inp)
+            loginnext = WebDriverWait(driver, 5).until(
+                            EC.element_to_be_clickable((By.CSS_SELECTOR, "._1LctnI"))
+                        )
+            loginnext.click()
+            loginpassword = WebDriverWait(driver, 5).until(
+                            EC.element_to_be_clickable((By.CSS_SELECTOR, ".jUwFiZ"))
+                        )
+            loginpassword.click()
+            time.sleep(0.5)
+            passd = driver.find_elements_by_css_selector("._2zrpKA")[1]
+            passd.clear()
+            passd.send_keys(pass_inp)
             form = WebDriverWait(driver, 20).until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, ".Km0IJL ._7UHT_c"))
-            )
-            print('Submit Button Clickable')
-        except:
-            print('Submit Button Not Clickable')
-        form.click()     
+                            EC.element_to_be_clickable((By.CSS_SELECTOR, "._1LctnI"))
+                        )
+            form.click()
         print("Logged In Successfully")
     except:
-        print('login_submit Failed. Retrying.')
-        time.sleep(0.5)	
-        login_submit()
-        
+        if ('Login &amp; Signup' not in driver.page_source and 'Login & Signup' not in driver.page_source):
+            print('Logged in Manually.')
+        else:
+            print('login_submit Failed. Please login manually.')
+            time.sleep(1)
+            login_submit()
+
 def buy_check():
     try:
         nobuyoption = True
@@ -145,6 +195,25 @@ def choose_payment():
         pay_method_sel = WebDriverWait(driver, 5).until(
                 EC.element_to_be_clickable((By.XPATH, pay_opt_input_final)) )
         pay_method_sel.click()
+
+        if pay_opt_input == 'EMI_OPTIONS':
+            emi_button = WebDriverWait(driver, 5).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, ".B7BM8s"))
+            )
+            emi_button.click()
+            time.sleep(0.5)
+            card_name = WebDriverWait(driver, 5).until(
+                    EC.element_to_be_clickable((By.XPATH, '//div[contains(text(), "'+bankname_input+'")]')) )
+            card_name.click()
+            time.sleep(0.5)
+            emi_tenure = WebDriverWait(driver, 5).until(
+                EC.element_to_be_clickable((By.XPATH, "//label[@for='"+tenure_input+"']")) )
+            emi_tenure.click()
+            time.sleep(0.5)
+            continue_emi = WebDriverWait(driver, 5).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, "._7UHT_c"))
+            )
+            continue_emi.click()
         print('Payment Method Selected Successfully')
     except:
         print('choose_payment Failed. Retrying.')
@@ -226,6 +295,20 @@ def try_till_otp():
     payment_continue()
     #otp_submit()
 
+def try_till_summary():       
+    login()
+    login_submit()
+    buy_check()
+    deliver_option()
+    deliver_continue()
+    order_summary_continue()
+
+def try_initial():       
+    login()
+    login_submit()
+    buy_check()
+
+
 def try_buy_page():
     driver.refresh()
     buy_check()
@@ -248,10 +331,13 @@ def try_payment_page():
     #otp_submit()
 
 if __name__ == "__main__":
-    try_all()
+    #try_all()
     try_till_otp()
     #try_payment_page()
     #try_buy_page()
+    #try_till_summary()
+    #try_initial()
+
 
 
 
