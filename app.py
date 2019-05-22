@@ -21,23 +21,12 @@ tenure_input = CONFIG.get('EMIOPTIONS', 'TENURE')
 url= CONFIG.get('ORDER', 'URL')
 
 print('\nLogging in with username:',email_inp)
-if pay_opt_input == 'EMI_OPTIONS':
-    print('\nEMI Option Selected. \nBANK:',bankname_input,'\nTENURE:',tenure_input,'\n')
-elif pay_opt_input == 'PHONEPE':
-    print('\nPayment with Phonepay\n')
-elif pay_opt_input == 'NET_OPTIONS':
-    print('\nNet Banking Payment Selected\n')
-elif pay_opt_input == 'COD':
-    print('\nCash On Delivery Selected\n')
-else:
-    print('\nFull Payment Selected\n')
-    
 
 driver = webdriver.Chrome(driver_path)
 driver.maximize_window()
 driver.get(url)
 
-input('\nConfirm Payment Details above, Product Details on Browser & Press Enter to proceed.')
+input('\nConfirm Details & Press Enter to proceed!')
 
 def login():
     try:
@@ -112,16 +101,16 @@ def buy_check():
                 driver.refresh()
                 time.sleep(0.2)
                 buyprod = driver.find_element_by_css_selector("._1k1QCg ._7UHT_c")
-                print('Buy Button Clickable')
+                print('Buy Button Clickable: ' + time.ctime())
                 nobuyoption = False
             except:
                 nobuyoption = True
-                print('Buy Button Not Clickable')
+                print('Buy Button Not Clickable: ' + time.ctime())
         buyprod.click()
-        print('Buy Button Clicked Successfully')
+        print('Buy Button Clicked Successfully: ' +  time.ctime())
         buy_recheck()
     except:
-        print('buy_check Failed. Retrying.')
+        print('buy_check Failed. Retrying: ' + time.ctime())
         time.sleep(0.5)	
         buy_check()
         
@@ -176,6 +165,8 @@ def order_summary_continue():
         print('Continue Button Clicked Successfully')
     except:
         print('order_summary_continue Failed. Retrying.')
+        time.sleep(0.5)	
+        order_summary_continue()
         
 def choose_payment():
     try:
@@ -205,7 +196,58 @@ def choose_payment():
         print('Payment Method Selected Successfully')
     except:
         print('choose_payment Failed. Retrying.')
+        time.sleep(0.5)	
+        choose_payment()
         
+def payment_emi():
+    try:
+        emi_path = "//label[@for='EMI_PAYMENT']"
+        emi_button = WebDriverWait(driver, 5).until(
+            EC.element_to_be_clickable((By.XPATH, emi_path))
+        )
+        emi_button.click()
+        print('EMI option selected')
+    except:
+        print('payment_emi Failed. Retrying.')
+        time.sleep(0.5)	
+        payment_emi()
+    payment_cvv()
+
+def payment_emi_term_select():
+    try:          
+        press_continue =  None
+        try:
+            press_continue = WebDriverWait(driver, 5).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, "._2o59RR ._7UHT_c"))
+            )
+            print('EMI 3 month term button clickable')   
+        except:
+            print('EMI 3 month term button not clicked')       
+        press_continue.click()
+        print('EMI 3 month term button clicked')
+    except:
+        print('payment_emi_term_select Failed. Retrying.')
+        time.sleep(0.5)	
+        payment_emi_term_select()
+    payment_emi_final()
+
+def payment_emi_final():
+    try:          
+        press_continue =  None
+        try:
+            press_continue = WebDriverWait(driver, 5).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, "._3hgEev ._7UHT_c"))
+            )
+            print('EMI button clickable')   
+        except:
+            print('EMI button not clicked')       
+        press_continue.click()
+        print('EMI button clicked')
+    except:
+        print('payment_emi_final Failed. Retrying.')
+        time.sleep(0.5)	
+        payment_emi_final()
+
 def payment_cvv():
     try:
         payment_sel =  None
@@ -217,6 +259,9 @@ def payment_cvv():
         print('CVV Entered:'+cvv_inp)
     except:
         print('payment_cvv Failed. Retrying.')
+        time.sleep(0.5)	
+        payment_cvv()
+    payment_continue()
         
 def payment_continue():
     try:
@@ -254,12 +299,24 @@ def otp_submit():
         print('otp_submit Failed. Retrying.')
 
 def run_script():
+    pay_mode = input('\n Choose payment mode: \n1. PhonePe \t2. Saved Card \t3. EMI: ')
     login()
     login_submit()
     buy_check()
     order_summary_continue()
-    payment_cvv()
-    payment_continue()
+    start = time.time()
+    print("Start time: {0}".format(start))
+    if pay_mode=='1':
+        choose_payment()
+        payment_continue()
+    elif pay_mode=='2':
+        payment_cvv()
+    elif pay_mode=='3':
+        payment_emi()
+        payment_emi_term_select()
+    end = time.time()
+    total = end - start
+    print("Total time taken: {0}".format(total))
 
 if __name__ == "__main__":
    run_script()
