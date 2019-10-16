@@ -20,3 +20,5 @@ Note:
 Make sure to have only one address in your flipkart account and only one card saved. Remove all extra credit and debit card from flipkart and phonepe account.
 
 More payment options coming soon (Currently only supports card payment).
+
+Forked from [Bot_Flipkart_Autobuy](https://github.com/jshreyan/Bot_Flipkart_Autobuy)
