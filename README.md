@@ -21,4 +21,4 @@ Make sure to have only one address in your flipkart account and only one card sa
 
 More payment options coming soon (Currently only supports card payment).
 
-Forked from [Bot_Flipkart_Autobuy](https://github.com/jshreyan/Bot_Flipkart_Autobuy)
+Forked from [flipkart-autobuy-old](https://github.com/atultherajput/flipkart-autobuy-old)
