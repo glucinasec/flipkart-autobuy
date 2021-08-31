@@ -8,7 +8,8 @@ from configparser import ConfigParser
 CONFIG = ConfigParser()
 CONFIG.read('config.ini')
 
-driver_path = CONFIG.get('MAIN', 'DRIVER_LOCATION') 
+driver_path = CONFIG.get('MAIN', 'DRIVER_LOCATION')
+binary_path = CONFIG.get('MAIN', 'BINARY_PATH') 
 email_inp = CONFIG.get('CREDENTIALS', 'USERNAME')
 pass_inp = CONFIG.get('CREDENTIALS', 'PASSWORD')
 cvv_inp = CONFIG.get('ORDER', 'CVV') 
@@ -22,7 +23,9 @@ url= CONFIG.get('ORDER', 'URL')
 
 print('\nLogging in with username:',email_inp)
 
-driver = webdriver.Chrome(driver_path)
+options = webdriver.ChromeOptions()
+options.binary_location = binary_path
+driver = webdriver.Chrome(driver_path, options=options)
 driver.maximize_window()
 driver.get(url)
 
@@ -33,7 +36,7 @@ def login():
         print("Logging In..")
         try:
             login = WebDriverWait(driver, 20).until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, "._34niwY"))
+                EC.element_to_be_clickable((By.CSS_SELECTOR, "._1_3w1N"))
             )
             print('Login Button Clickable')
         except:
@@ -49,15 +52,15 @@ def login_submit():
     try:
         if 'Enter Password' in driver.page_source:
             print('Trying Usual method of Login.')
-            email = driver.find_element_by_css_selector(".Km0IJL ._2zrpKA")
-            passd = driver.find_element_by_css_selector(".Km0IJL ._3v41xv")
+            email = driver.find_element_by_css_selector("._2IX_2-.VJZDxU")
+            passd = driver.find_element_by_css_selector("._2IX_2-._3mctLh.VJZDxU")
             email.clear()
             passd.clear()
             email.send_keys(email_inp)
             passd.send_keys(pass_inp)
             try:
                 form = WebDriverWait(driver, 20).until(
-                    EC.element_to_be_clickable((By.CSS_SELECTOR, ".Km0IJL ._7UHT_c"))
+                    EC.element_to_be_clickable((By.CSS_SELECTOR, "._2KpZ6l._2HKlqd._3AWRsL"))
                 )
                 print('Submit Button Clickable')
             except:
@@ -100,7 +103,7 @@ def buy_check():
             try:
                 driver.refresh()
                 time.sleep(0.2)
-                buyprod = driver.find_element_by_css_selector("._1k1QCg ._7UHT_c")
+                buyprod = driver.find_element_by_css_selector("._2KpZ6l._2U9uOA.ihZ75k._3AWRsL")
                 print('Buy Button Clickable: ' + time.ctime())
                 nobuyoption = False
             except:
@@ -160,7 +163,7 @@ def deliver_continue():
         
 def order_summary_continue():
     try:
-        press_continue =  driver.find_element_by_css_selector("._2Q4i61")             
+        press_continue =  driver.find_element_by_css_selector("._2KpZ6l._1seccl._3AWRsL")             
         press_continue.click()
         print('Continue Button Clicked Successfully')
     except:
@@ -252,7 +255,7 @@ def payment_cvv():
     try:
         payment_sel =  None
         payment_sel = WebDriverWait(driver, 5).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, "._16qL6K"))
+            EC.presence_of_element_located((By.CSS_SELECTOR, "._1w3ZZo._2mFmU7"))
         )
         payment_sel.clear()
         payment_sel.send_keys(cvv_inp)
@@ -268,7 +271,7 @@ def payment_continue():
         pay =  None
         try:
             pay = WebDriverWait(driver, 5).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, "._3K1hJZ ._7UHT_c"))
+                EC.presence_of_element_located((By.CSS_SELECTOR, "._2KpZ6l.OgciKk._3AWRsL"))
             )
             print('Pay Button Clickable')   
         except:
